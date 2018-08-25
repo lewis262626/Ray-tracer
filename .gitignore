@@ -1,4 +1,8 @@
 raytracer
 *.out
 *.ppm
-
+CMakeFiles/
+Makefile
+*.cmake
+bin/
+CMakeCache.txt
