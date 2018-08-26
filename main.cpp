@@ -4,21 +4,32 @@
 #include "vec3.h"
 #include "camera.h"
 #include <float.h>
+#include "stb_image_write.h"
+#include "main.h"
 
 vec3 color(const ray &r, hittable *world) {
     hit_records rec;
     if (world->hit(r, 0.0, MAXFLOAT, rec)) {
-        return 0.5*vec3(rec.normal.x()+1, rec.normal.y()+1, rec.normal.z()+1);
+        vec3 target = rec.p + rec.normal + random_in_unit_sphere();
+        return 0.5*color(ray(rec.p, target - rec.p), world);
     }
     vec3 unit_direction = unit_vector(r.direction());
     float t = 0.5*(unit_direction.y() + 1.0);
     return (1.0-t)*vec3(1.0, 1.0, 1.0) + t*vec3(0.5, 0.7, 1.0);
 }
 
+vec3 random_in_unit_sphere() {
+    vec3 p;
+    do {
+        p = 2.0*vec3(drand48(), drand48(), drand48()) - vec3(1,1,1);
+    } while (p.squared_length() > 1.0);
+    return p;
+}
+
 int main(void)
 {
-    int nx = 800;
-    int ny = 600;
+    int nx = 1280;
+    int ny = 720;
     int ns = 100;
     std::cout << "P3\n" << nx << " " << ny << "\n255\n";
     hittable *list[2];
